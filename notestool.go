@@ -44,7 +44,24 @@ func main() {
 }
 
 func GetInput() int {
-	return 0
+	var noteN int
+
+	in := bufio.NewReader(os.Stdin)
+
+	strN, err := in.ReadString('\n')
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+
+	strN = strings.TrimSpace(strN)
+	noteN, err = strconv.Atoi(strN)
+
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	return noteN
 }
 
 func GetOperation() int {
@@ -68,7 +85,17 @@ func GetOperation() int {
 }
 
 func ReadMessage() string {
-	return ""
+	in := bufio.NewReader(os.Stdin)
+
+	message, err := in.ReadString('\n')
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	message = strings.TrimSpace(message)
+
+	return message
+
 }
 
 func ReadFile(filename string) int {

@@ -83,8 +83,8 @@ Select operation:
 
  Go packages:
 
--`"bufio"`
--`"fmt"`
+- `"bufio"`
+- `"fmt"`
 - `"io"`
 - `"os"`
 - `"strconv"`
