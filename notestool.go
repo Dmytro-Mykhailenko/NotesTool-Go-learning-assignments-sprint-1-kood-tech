@@ -78,7 +78,25 @@ func ReadMessage() string {
 }
 
 func ReadFile(filename string) int {
-	return 0
+	GetMessage(8)
+	file, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	defer file.Close()
+
+	in := bufio.NewReader(file)
+	x := 1
+	for {
+		note, err := in.ReadString('\n')
+		if err != nil {
+			break
+		}
+		fmt.Printf("%.3d - %s", x, note)
+		x++
+	}
+	return x
 }
 
 func DeleteANote(filename string, lineNum int) {
