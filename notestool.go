@@ -17,9 +17,15 @@ func main() {
 	args := os.Args[1:]
 	// args := []string{"coding_ideas.txt"}
 
-	if len(args) != 1 || args[0] == "help" {
+	if len(args) != 1 {
 		GetMessage(1)
 		return
+	} else {
+
+		if args[0] == "help" {
+			GetMessage(9)
+			return
+		}
 	}
 
 	for {
@@ -72,14 +78,43 @@ func ReadMessage() string {
 }
 
 func ReadFile(filename string) int {
-	return 0
+	GetMessage(8)
+	file, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	defer file.Close()
+
+	in := bufio.NewReader(file)
+	x := 1
+	for {
+		note, err := in.ReadString('\n')
+		if err != nil {
+			break
+		}
+		fmt.Printf("%.3d - %s", x, note)
+		x++
+	}
+	return x
 }
 
 func DeleteANote(filename string, lineNum int) {
 }
 
 func AddANote(s string, filename string) {
-	return
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(s + "\n")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
 func GetMessage(n int) {
@@ -112,6 +147,29 @@ Usage: ./notestool [file name]
 		s = "\nWelcome to the notes tool!"
 	case 8:
 		s = "\nNotes:"
+	case 9:
+		s =
+			`
+- Detailed Help:
+-
+- Use the following commands after starting the program with a file name:
+-
+-	1. Show notes: Display all current notes from the specified file.
+-	2. Add a note: Prompt you to enter a note text, which is then added to the file.
+-	3. Delete a note: Prompt you to select a note to delete based on its number.
+-	4. Exit: Quit the program.
+-
+- Usage Examples:
+-
+- To manage notes in a file named 'mynotes.txt':
+-
+-	$ ./notestool mynotes
+-	After starting, follow prompts to manage your notes.
+-
+- To get this help message:
+-
+-	$ ./notestool help
+`
 	}
 
 	fmt.Println(s)
