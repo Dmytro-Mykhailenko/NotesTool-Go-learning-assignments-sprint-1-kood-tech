@@ -1,3 +1,3 @@
 # notes
 
-conslllole application for short notes
+console application for short notes
