@@ -44,7 +44,7 @@ Notes:
 ```
 4. After operation 2 is selected you are asked to add a note
 ```
-Enter the note text:
+Enter the note text or 0 to cancel:
 note three
 
 Notes:
@@ -77,16 +77,17 @@ Select operation:
  - For each collection, a separate database is created as a plain text file with the same name as the collection.
  - Notes are stored in separate rows within the database file.
  - Notes persist between runs of the tool.
-
+---
 
 ## Resources
 
  Go packages:
-`"bufio"`
-`"fmt"`
-`"io"`
-`"os"`
-`"strconv"`
-`"strings"`
-[Repository](https://gitea.kood.tech/dmytromykhailenko/notes)
+
+- `"bufio"`
+- `"fmt"`
+- `"io"`
+- `"os"`
+- `"strconv"`
+- `"strings"`
+- [Repository](https://gitea.kood.tech/dmytromykhailenko/notes)
 
