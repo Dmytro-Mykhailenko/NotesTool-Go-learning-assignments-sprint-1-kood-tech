@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -15,17 +16,13 @@ func main() {
 	var action int
 
 	args := os.Args[1:]
-	// args := []string{"coding_ideas.txt"}
 
 	if len(args) != 1 {
 		GetMessage(1)
 		return
-	} else {
-
-		if args[0] == "help" {
-			GetMessage(9)
-			return
-		}
+	} else if args[0] == "help" {
+		GetMessage(9)
+		return
 	}
 
 	for {
@@ -33,11 +30,44 @@ func main() {
 
 		switch action {
 		case 1:
-
+			ReadFile(args[0])
 		case 2:
+			{
+				for {
+					GetMessage(4)
+					message := ReadMessage()
 
+					if message == "" {
+						GetMessage(5)
+					} else if message == "0" {
+						break
+					} else {
+						AddANote(message, args[0])
+					}
+				}
+			}
 		case 3:
+			{
 
+				for {
+					max := ReadFile(args[0])
+					if max == 1 {
+						break
+					}
+					GetMessage(6)
+					x := GetInput()
+					if x == 0 {
+						break
+					} else if x >= max || x < 0 {
+						GetMessage(3)
+						continue
+					} else {
+						DeleteANote(args[0], x)
+					}
+
+				}
+
+			}
 		case 4:
 			{
 				GetMessage(2)
@@ -127,6 +157,46 @@ func ReadFile(filename string) int {
 }
 
 func DeleteANote(filename string, lineNum int) {
+	file, err := os.OpenFile(filename, os.O_RDWR, 0644)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	var lines []string
+
+	x := 1
+	for scanner.Scan() {
+		if x != lineNum {
+			lines = append(lines, scanner.Text())
+		}
+		x++
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if err := file.Truncate(0); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for _, line := range lines {
+		_, err := fmt.Fprintln(file, line)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 }
 
 func AddANote(s string, filename string) {
@@ -156,16 +226,18 @@ func GetMessage(n int) {
 			`
 =======================================
 Please type database name as an argument
-Usage: ./notestool [file name]
+or 'help' for usage description
+
+Exemple: ./notestool [argument]
 ========================================
 
 `
 	case 2:
 		s = "\nGoodbye!\n"
 	case 3:
-		s = "\n[You have entered unsuitable selection for operation. Please select again.]"
+		s = "\n[You have entered unsuitable selection. Please try again.]"
 	case 4:
-		s = "\n>Enter the note or 0 to cancel:"
+		s = "\n>Enter the note or 0 to cancel:\n"
 	case 5:
 		s = "[You have entered no message. Please try again.]"
 	case 6:
